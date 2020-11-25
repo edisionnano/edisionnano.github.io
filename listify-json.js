@@ -19,6 +19,6 @@ function drawTable(data) {
 function drawRow(rowData) {
     var row = $("<tr />")
     $("#personDataTable").append(row); 
-    row.append($('<div class="featured"><a href=' + rowData.assets[0].browser_download_url + ">" + rowData.tag_name + "</a></div>"));
+    row.append($('<div class="featured"><a href=' + rowData.assets[1].browser_download_url + ">" + rowData.tag_name + "</a></div>"));
 }
 
