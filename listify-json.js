@@ -1,6 +1,6 @@
 
 $.ajax({
-    url: 'https://api.github.com/repos/pineappleEA/pineappleEA.github.io/releases',
+    url: 'https://api.github.com/repos/pineappleEA/pineapple-src/releases',
     type: "get",
     dataType: "json",
    
