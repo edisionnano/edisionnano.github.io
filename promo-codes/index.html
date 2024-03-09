@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Promo Codes Table</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+    <style>
+      body {
+        background-color: #ECECE2;
+        font: 500 1.25rem/1 Rubik, sans-serif;
+        color: #260563;
+      }
+
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        border: 1px solid #260563;
+        /* Add border styling */
+      }
+
+      th,
+      td {
+        border: 1px solid #260563;
+        /* Add border styling */
+        padding: 8px;
+        text-align: center;
+      }
+
+      th {
+        background-color: #f2f2f2;
+      }
+
+      .copyButton {
+        background-color: #4CAF50;
+        /* Green */
+        border: none;
+        color: white;
+        padding: 5px 10px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 14px;
+        position: absolute;
+        right: 5px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        border-radius: 4px;
+      }
+
+      .nameCell {
+        position: relative;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Promo Codes</h1>
+    <table id="promoTable">
+      <thead>
+        <tr>
+          <th>Όνομα</th>
+          <th>Έκπτωση</th>
+          <th>Λήξη</th>
+          <th>Περιοχή</th>
+        </tr>
+      </thead>
+      <tbody id="promoTableBody"></tbody>
+    </table>
+    <script>
+      function copyNameToClipboard(name) {
+        navigator.clipboard.writeText(name).then(() => {
+          alert('Ο κωδικός ' + name + " αντιγράφτηκε στο πρόχειρο");
+        }).catch(err => {
+          console.error('Error copying name to clipboard:', err);
+        });
+      }
+      async function fetchData(url, emoji) {
+        try {
+          const referer = atob('aHR0cHM6Ly9zdGVpbGVkZW1hLmJveG5vdy5nci9ob21l');
+          const auth = atob('QmVhcmVyIDc3NWUwYmVlYjg2NGJlYjQ5ZjEwM2M5YWUxYTdiZGVhODU4MWJjMmM3OWI3NzVjM2FhY2NlZDFhMjVkN2Y2NDViMzNlYTdlYzE1N2EyZjQwZTFhNTMxMzk4NjFiMDNmOWE3OGI5NjM1OWJkNjg2Y2FiY2U2MjYyNDc0MWU4M2E4ZTg2ZGRlNGVmYTI1YjYxNmQyOTdlMWYxODQ3OWJhNDU4NGNkNTRlNThmZDI0NjY0ZTkwNWUwNWNiZWY2YjcyYWQzMjZiYjBiNThlNDE5NTU3NTc1NWE2N2YzNTllMTgwY2RlYmYwN2RjOTAxY2Y2ZGVmMjM0NmU5NmE4MGQzMWE=');
+          const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+              'Accept': 'application/json, text/plain, */*',
+              'Accept-Language': 'en-US,en;q=0.5',
+              'Accept-Encoding': 'gzip, deflate, br',
+              'Authorization': auth,
+              'Connection': 'keep-alive',
+              'Referer': referer,
+              'Sec-Fetch-Dest': 'empty',
+              'Sec-Fetch-Mode': 'cors',
+              'Sec-Fetch-Site': 'same-origin',
+              'TE': 'trailers'
+            }
+          });
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          const data = await response.json();
+          const promoData = data.data;
+          // Sort promoData by discount in descending order
+          promoData.sort((a, b) => b.attributes.discount - a.attributes.discount);
+          const tableBody = document.getElementById('promoTableBody');
+          promoData.forEach(promo => {
+            const {
+              name,
+              discount,
+              expires
+            } = promo.attributes;
+            const expirationDate = new Date(expires);
+            const formattedExpires = `${expirationDate.getDate()}/${expirationDate.getMonth() + 1}/${expirationDate.getFullYear()}`;
+            const row = document.createElement('tr');
+            row.innerHTML = `
+
+								<td class="nameCell">${name}
+
+									<button class="copyButton" onclick="copyNameToClipboard('${name}')">Copy</button>
+								</td>
+								<td>${discount}%</td>
+								<td>${formattedExpires}</td>
+								<td>${emoji}</td>
+      `;
+            tableBody.appendChild(row);
+          });
+        } catch (error) {
+          console.error('There was a problem with the fetch operation:', error);
+        }
+      }
+      async function fetchAllData() {
+        baseUrl = atob('aHR0cHM6Ly9zdGVpbGVkZW1hLmJveG5vdy5nci9hcGkvc3RyYXBpL3Byb21vLWNvZGU');
+        await fetchData(baseUrl + 's?pagination[start]=0&pagination[limit]=1000', '🇬🇷');
+        await fetchData(baseUrl + '-globals?pagination[start]=0&pagination[limit]=1000', '🌐');
+        await fetchData(baseUrl + '-cypruses?pagination[start]=0&pagination[limit]=1000', '🇨🇾');
+      }
+      fetchAllData();
+    </script>
+  </body>
+</html>
