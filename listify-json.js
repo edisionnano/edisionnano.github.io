@@ -16,9 +16,13 @@ function drawTable(data) {
     }
 }
 
+function isWindows() {
+  return window.navigator.platform.toLowerCase().includes('win');
+}
+
 function drawRow(rowData) {
     var row = $("<tr />")
     $("#personDataTable").append(row); 
-    row.append($('<div class="featured"><a href=' + rowData.assets[0].browser_download_url + ">" + rowData.tag_name + "</a></div>"));
+    row.append($('<div class="featured"><a href=' + rowData.assets[isWindows() ? 1 : 0].browser_download_url + ">" + rowData.tag_name + "</a></div>"));
 }
 
